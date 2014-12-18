@@ -1,5 +1,5 @@
 <?php
- /**
+/**
  * Remote.php
  *
  * PHP Version 5
@@ -13,7 +13,7 @@
 
 namespace DavidVerholen\Git;
 
- /**
+/**
  * Class Remote
  *
  * @category davidverholen_git-tools
@@ -76,9 +76,23 @@ class Remote
      */
     public static function createFromUrl($url, $name = self::DEFAULT_NAME)
     {
+        return self::createFromUrlParts(parse_url($url), $name);
+    }
+
+    /**
+     * createFromUrlParts
+     *
+     * @param array  $urlParts
+     * @param string $name
+     *
+     * @return Remote
+     */
+    public static function createFromUrlParts(
+        array $urlParts,
+        $name = self::DEFAULT_NAME
+    ) {
         $instance = self::create($name);
 
-        $urlParts = parse_url($url);
         $instance->setScheme($instance->getIfIsset($urlParts, 'scheme'));
         $instance->setUser($instance->getIfIsset($urlParts, 'user'));
         $instance->setPassword($instance->getIfIsset($urlParts, 'pass'));
@@ -124,11 +138,11 @@ class Remote
     {
         return http_build_url([
             'scheme' => $this->getScheme(),
-            'host' => $this->getHost(),
-            'port' => $this->getPort(),
-            'user' => $this->getUser(),
-            'pass' => $this->getPassword(),
-            'path' => $this->getPath()
+            'host'   => $this->getHost(),
+            'port'   => $this->getPort(),
+            'user'   => $this->getUser(),
+            'pass'   => $this->getPassword(),
+            'path'   => $this->getPath()
         ]);
     }
 
