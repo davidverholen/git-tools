@@ -1,0 +1,31 @@
+{
+    "name": "davidverholen/git-tools",
+    "description": "simple php git wrapper",
+    "minimum-stability": "stable",
+    "license": "OSL-3.0",
+    "authors": [
+        {
+            "name": "David Verholen",
+            "email": "david@verholen.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "symfony/process": "*",
+        "symfony/filesystem": "*",
+        "jakeasmith/http_build_url": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "DavidVerholen\\Git": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "DavidVerholen\\Test\\Git": "tests/"
+        }
+    }
+}
