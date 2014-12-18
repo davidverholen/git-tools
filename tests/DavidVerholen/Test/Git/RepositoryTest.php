@@ -99,6 +99,25 @@ class RepositoryTest extends AbstractTest
         );
     }
 
+    public function testMergeRemotes()
+    {
+        $this->assertEquals(
+            Remote::createFromUrlParts([
+                'scheme' => 'http',
+                'host' => 'github.com'
+            ]),
+            $this->getObject()->mergeRemotes(
+                Remote::createFromUrlParts([
+                    'scheme' => 'http',
+                    'host' => 'github.de'
+                ]),
+                Remote::createFromUrlParts([
+                    'host' => 'github.com'
+                ])
+            )
+        );
+    }
+
     public function testChangeNonExistantRemoteUrl()
     {
         $originalUrl = 'https://github.com/symfony/symfony.git';

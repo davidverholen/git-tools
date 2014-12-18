@@ -107,14 +107,10 @@ class Repository
             return true;
         }
 
-        $currentRemote = $this->getRemote($name);
-        $currentRemote->setName($changedRemote->getName());
-        $currentRemote->setScheme($changedRemote->getScheme());
-        $currentRemote->setUser($changedRemote->getUser());
-        $currentRemote->setPassword($changedRemote->getPassword());
-        $currentRemote->setHost($changedRemote->getHost());
-        $currentRemote->setPort($changedRemote->getPort());
-        $currentRemote->setPath($changedRemote->getPath());
+        $newRemote = $this->mergeRemotes(
+            $this->getRemote($name),
+            $changedRemote
+        );
 
         $success = true;
 
@@ -130,11 +126,64 @@ class Repository
         $success &= $this->runGit([
             'remote',
             'set-url',
-            $currentRemote->getName(),
-            $currentRemote->getUrl()
+            $newRemote->getName(),
+            $newRemote->getUrl()
         ])->isSuccessful();
 
         return $success;
+    }
+
+    /**
+     * mergeRemotes
+     *
+     * @param $original
+     * @param $update
+     *
+     * @return mixed
+     */
+    public function mergeRemotes($original, $update)
+    {
+        $fieldsToUpdate = [
+            'name',
+            'scheme',
+            'user',
+            'password',
+            'host',
+            'port',
+            'path'
+        ];
+
+        foreach ($fieldsToUpdate as $field) {
+            $original = $this->updateIfChanged(
+                $original,
+                $update,
+                'get' . ucfirst(strtolower($field)),
+                'set' . ucfirst(strtolower($field))
+            );
+        }
+
+        return $original;
+    }
+
+    /**
+     * updateIfChanged
+     *
+     * @param $old
+     * @param $new
+     * @param $getter
+     * @param $setter
+     *
+     * @return mixed
+     */
+    protected function updateIfChanged($old, $new, $getter, $setter)
+    {
+        $old->$setter(
+            ($old->$getter() !== $new->$getter() && $new->$getter() !== null)
+                ? $new->$getter()
+                : $old->$getter()
+        );
+
+        return $old;
     }
 
     /**
